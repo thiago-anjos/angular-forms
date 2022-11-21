@@ -1,9 +1,32 @@
 <mat-card class="login-page">
   <mat-card-title>Login</mat-card-title>
   <mat-card-content>
-    <form class="login-form data-form" #loginForm="ngForm">
+    <form
+      class="login-form data-form"
+      #loginForm="ngForm"
+      (ngSubmit)="login(loginForm, $event)"
+    >
       <mat-form-field>
-        <input matInput type="email" name="email" placeholder="Email" ngModel />
+        <input
+          matInput
+          type="email"
+          name="email"
+          placeholder="Email"
+          ngModel
+          [ngModelOptions]="{ updateOn: 'blur' }"
+          required
+          email
+          minlength="6"
+          #email="ngModel"
+          (ngModelChange)="emailChange($event)"
+        />
+        <mat-error *ngIf="email.errors?.required"
+          >Digite um e-mail válido!</mat-error
+        >
+        <mat-error *ngIf="email.errors?.minlength"
+          >Necessário mais de 6 caracteres</mat-error
+        >
+        <mat-error *ngIf="email.errors?.email">E-mail inválido</mat-error>
       </mat-form-field>
 
       <mat-form-field>
@@ -13,12 +36,23 @@
           placeholder="Password"
           name="password"
           ngModel
+          required
         />
+        <mat-error>Digite uma senha</mat-error>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" (click)="login(loginForm)">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!loginForm.valid"
+      >
         Login
       </button>
+      <!-- {{ email.errors | json }} -->
     </form>
   </mat-card-content>
 </mat-card>
+
+<!-- Dentro do input, eu associo um 'id' que recebe a diretiva ngModel e com isso consigo fazer as validações no template.html
+#email="ngModel" -->
