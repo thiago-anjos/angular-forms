@@ -12,7 +12,7 @@
           type="email"
           name="email"
           placeholder="Email"
-          [ngModel]="val.email"
+          [(ngModel)]="val.email"
           [ngModelOptions]="{ updateOn: 'blur' }"
           required
           email
@@ -35,7 +35,7 @@
           type="password"
           placeholder="Password"
           name="password"
-          [ngModel]="val.password"
+          [(ngModel)]="val.password"
           required
         />
         <mat-error>Digite uma senha</mat-error>
