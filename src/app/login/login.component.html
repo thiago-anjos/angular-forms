@@ -10,10 +10,9 @@
         <input
           matInput
           type="email"
-          name="email"
           placeholder="Email"
           ngModel
-          [ngModelOptions]="{ updateOn: 'blur' }"
+          [ngModelOptions]="{ updateOn: 'blur', name: 'email' }"
           required
           email
           minlength="6"
