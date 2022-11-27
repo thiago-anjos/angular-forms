@@ -8,8 +8,8 @@ import { NgForm } from "@angular/forms";
 })
 export class LoginComponent implements OnInit {
   val = {
-    email: "test@gmail.com",
-    password: "pass1234",
+    email: "",
+    password: "",
   };
 
   constructor() {}
