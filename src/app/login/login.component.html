@@ -41,28 +41,27 @@
           required
           minlength="8"
         />
-
-        <ng-container
-          *ngIf="
-            password.errors
-              | onlyOneError: ['minlength', 'passwordStrength'] as error
-          "
-        >
-          <mat-error *ngIf="error?.passwordStrength"
-            >Senha precisa conter no mínimo: Uma letra maíuscula, minúscula e
-            número.</mat-error
-          >
-          <mat-error *ngIf="error?.minlength"
-            >Necessário mais de
-            {{ error?.minlength?.requiredLength }}
-            caracteres</mat-error
-          >
-        </ng-container>
-
         <mat-error *ngIf="password.errors?.required"
           >Digite uma senha</mat-error
         >
       </mat-form-field>
+
+      <ng-container
+        *ngIf="
+          password.errors
+            | onlyOneError: ['minlength', 'passwordStrength'] as error
+        "
+      >
+        <div class="field-message" *ngIf="error?.passwordStrength">
+          Senha precisa conter no mínimo: Uma letra maíuscula, minúscula e
+          número.
+        </div>
+        <div class="field-message" *ngIf="error?.minlength">
+          Necessário mais de
+          {{ error?.minlength?.requiredLength }}
+          caracteres
+        </div>
+      </ng-container>
 
       <button
         mat-raised-button
