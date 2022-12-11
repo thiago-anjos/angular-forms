@@ -10,6 +10,14 @@
           placeholder="Email"
           formControlName="email"
         />
+
+        <mat-error *ngIf="email.errors?.required"
+          >Digite um e-mail válido!</mat-error
+        >
+        <mat-error *ngIf="email.errors?.minlength"
+          >Necessário mais de 6 caracteres</mat-error
+        >
+        <mat-error *ngIf="email.errors?.email">E-mail inválido</mat-error>
       </mat-form-field>
 
       <mat-form-field>
@@ -19,9 +27,45 @@
           placeholder="Password"
           formControlName="password"
         />
+
+        <mat-error *ngIf="password.errors?.required"
+          >Digite uma senha</mat-error
+        >
       </mat-form-field>
 
-      <button mat-raised-button color="primary">Login</button>
+      <ng-container
+        *ngIf="
+          password.errors
+            | onlyOneError : ['minlength', 'passwordStrength'] as error
+        "
+      >
+        <div class="field-message" *ngIf="error?.passwordStrength">
+          Senha precisa conter no mínimo: Uma letra maíuscula, minúscula e
+          número.
+        </div>
+        <div class="field-message" *ngIf="error?.minlength">
+          Necessário mais de
+          {{ error?.minlength?.requiredLength }}
+          caracteres
+        </div>
+      </ng-container>
+
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!form.valid"
+        (click)="login()"
+      >
+        Login
+      </button>
+      <button
+        mat-raised-button
+        color="secondary"
+        [disabled]="!form.valid"
+        (click)="reset()"
+      >
+        Reset
+      </button>
     </form>
     <div class="form-val">
       {{ form.value | json }}

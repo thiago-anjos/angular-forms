@@ -29,9 +29,26 @@ export class LoginReactiveComponent implements OnInit {
         createPasswordStrengthValidator(),
       ],
     ],
+    test: [""],
   });
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {}
+
+  get email() {
+    return this.form.controls["email"];
+  }
+  get password() {
+    return this.form.controls["password"];
+  }
+
+  login() {
+    const formvalue = this.form.value;
+  }
+
+  reset() {
+    this.form.reset();
+    console.log(this.form.value);
+  }
 }
