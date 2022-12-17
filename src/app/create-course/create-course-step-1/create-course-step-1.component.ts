@@ -22,6 +22,7 @@ export class CreateCourseStep1Component implements OnInit {
         updateOn: "blur",
       },
     ],
+    releaseDateAt: [new Date(), Validators.required],
   });
 
   constructor(private fb: FormBuilder, private course: CoursesService) {}

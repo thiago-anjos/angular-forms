@@ -12,5 +12,19 @@
       >This title is already being used</mat-error
     >
   </mat-form-field>
-  {{ courseTitle.errors | json }}
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Release Date"
+      [matDatepicker]="releaseDatePicker"
+      formControlName="releaseDateAt"
+    />
+    <mat-datepicker-toggle
+      [for]="releaseDatePicker"
+      matSuffix
+    ></mat-datepicker-toggle>
+    <mat-datepicker #releaseDatePicker> </mat-datepicker>
+  </mat-form-field>
+
+  {{ form.value | json }}
 </div>
