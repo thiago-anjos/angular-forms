@@ -7,6 +7,27 @@
   <mat-form-field>
     <input matInput placeholder="price" formControlName="price" type="number" />
   </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Promotional period</mat-label>
+
+    <mat-date-range-input [rangePicker]="promoPicker">
+      <input
+        placeholder="start date"
+        matStartDate
+        formControlName="promoStartAt"
+      />
+
+      <input placeholder="end date" matEndDate formControlName="promoEndAt" />
+    </mat-date-range-input>
+
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="promoPicker"
+    ></mat-datepicker-toggle>
+
+    <mat-date-range-picker #promoPicker></mat-date-range-picker>
+  </mat-form-field>
 </div>
 
 <div class="form-val">
