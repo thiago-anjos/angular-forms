@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { createPromoRangeValidator } from "../../validadors/data-range.validators";
+import { fileUploadValidator } from "../../validadors/file-upload-validator";
 
 @Component({
   selector: "create-course-step-2",
@@ -20,9 +21,9 @@ export class CreateCourseStep2Component implements OnInit {
           Validators.pattern("[0-9]"),
         ],
       ],
-      thumbnail: [null],
-      promoStartAt: [null],
-      promoEndAt: [null],
+      thumbnail: [null, [Validators.required, fileUploadValidator()]],
+      promoStartAt: [null, Validators.required],
+      promoEndAt: [null, Validators.required],
     },
     {
       validators: [createPromoRangeValidator()],

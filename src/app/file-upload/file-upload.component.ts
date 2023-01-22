@@ -1,7 +1,14 @@
 import { Component, Input } from "@angular/core";
 import { HttpClient, HttpEventType } from "@angular/common/http";
 import { catchError, finalize } from "rxjs/operators";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from "@angular/forms";
 import { of } from "rxjs";
 
 // IMPORTANTE: precisamos registrar esse component no angular, usando um customer provider para que o componente pai enxergue o filho 'angularizado'
@@ -12,6 +19,11 @@ import { of } from "rxjs";
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: FileUploadComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
       multi: true,
       useExisting: FileUploadComponent,
     },
@@ -28,9 +40,10 @@ Que permitirá que este componente tenha na sua chamada no componente pai a prop
 sejam manipulados pelo form do angular: writeValue, registerOnChange, registerOnTouched e setDisableState.
 
 */
-export class FileUploadComponent implements ControlValueAccessor {
+export class FileUploadComponent implements ControlValueAccessor, Validator {
   @Input()
   requiredFileType: string;
+
   fileName: string = "";
 
   fileUploadError = false;
@@ -41,7 +54,21 @@ export class FileUploadComponent implements ControlValueAccessor {
 
   _onTouched = () => {};
 
+  _onValidatorChange = () => {};
+
+  _checkFileType = (file: string): Boolean => {
+    let error = false;
+    if (file.match("jpg") === null && file.match("png") === null) {
+      error = true;
+    } else {
+      error = false;
+    }
+    return error;
+  };
+
   _disabled: boolean = false;
+
+  _fileUploadSuccess = false;
 
   constructor(private http: HttpClient) {}
 
@@ -52,10 +79,8 @@ export class FileUploadComponent implements ControlValueAccessor {
   }
 
   _onFileSelected(event) {
-    console.log(event);
     const file: File = event.target.files[0];
-    if (!file) return;
-    console.log(file);
+
     this.fileName = file.name;
 
     const formData = new FormData();
@@ -80,14 +105,13 @@ export class FileUploadComponent implements ControlValueAccessor {
       )
       .subscribe((event) => {
         if (event.type == HttpEventType.UploadProgress) {
-          console.log("event loaded", event.loaded);
-          console.log("event total", event.total);
           this.uploadProgress = Math.round((100 * event.loaded) / event.total);
-          console.log(this.uploadProgress);
         } else if (event.type == HttpEventType.Response) {
           //nessa função de callback vamos 'emitir' o aviso de que o temos um nome de arquivo para que o pai saiba e vamos usar isso no registerOnChange
           // que espera uma função de callback em sua implementação inicial, por isso criamos o onChange lá em cima antes do constructor.
           this._onChange(this.fileName);
+          this._fileUploadSuccess = true;
+          this._onValidatorChange();
         }
       });
   }
@@ -110,5 +134,34 @@ export class FileUploadComponent implements ControlValueAccessor {
   // state disable of input
   setDisabledState(isDisabled: boolean): void {
     this._disabled = isDisabled;
+  }
+
+  registerOnValidatorChange(onValidatorChange: () => void): void {
+    this._onValidatorChange = onValidatorChange;
+  }
+
+  // Adicionar ao componente HTML do filho, a propriedade que permite a API validar se ele está no estado de válido ou não, tornando ele um item required do form
+  validate(control: AbstractControl<any, any>): ValidationErrors {
+    if (this._fileUploadSuccess) {
+      return null;
+    }
+
+    // criação do objeto dos erros que serão emitidos
+    let errors: any = {};
+
+    console.log(this.fileName && this._checkFileType(this.fileName));
+
+    if (this.fileName && this._checkFileType(this.fileName)) {
+      errors.fileType = true;
+    }
+
+    //arquivo deu erro ao subir
+    if (this.fileUploadError) {
+      errors.uploadFailed = true;
+    }
+
+    console.log(errors);
+
+    return errors;
   }
 }
