@@ -35,6 +35,7 @@ export class CreateCourseStep1Component implements OnInit {
     downLoadsAllowed: [false, Validators.requiredTrue],
     longDescription: ["", [Validators.required, Validators.minLength(6)]],
     category: ["BEGINNER", Validators.required],
+    address: [null, Validators.required],
   });
 
   constructor(private fb: FormBuilder, private course: CoursesService) {}
